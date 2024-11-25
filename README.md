@@ -38,7 +38,7 @@ The model_training.py script provides an easy way to train and save embedding mo
 ### Step by step training example
 #### 1. **Choose Your Knowledge Graph Dataset**
 - You can use a built-in dataset from PyKEEN (e.g., nations, fb15k) or provide your own dataset in TSV format.
-- If you use a custom set of triples, it must be a tsv file that follows this structure:
+- If you use a custom set of triples, it must be a TSV file that follows this structure:
 ```
 subject1   predicate1   object1
 subject2   predicate2   object2
@@ -46,13 +46,13 @@ subject2   predicate2   object2
 #### 2. **Configure the Training Parameters**
 Open the `model_training.py` script and customize the training parameters as you wish. Some of the key options include:
 
-- **Dataset Source**:
+**Dataset Source**:
 - Use a predefined PyKEEN dataset by setting `triples_from_dataset=True` and specifying the dataset name (e.g., `dataset="nations"`).
 - Load a custom dataset from a file by setting `triples_from_path=True` and providing the path (`triples_path="path/to/triples.tsv`).
-- **Model Settings**:
+**Model Settings**:
 - Specify the embedding model (e.g., `TransE`, `ComplEx`) via `embedding_model`.
 - Adjust hyperparameters like embedding dimensions, loss function, learning rate, and number of epochs.
-- **Saving Options**:
+**Saving Options**:
 - Models are saved to the `models/` directory by default. You can change this with `models_route`.
 
 Example Configuration for the Nations Dataset:
@@ -75,19 +75,17 @@ Execute the script to start the training process:
 ```bash
 python scripts/model_training.py
 ```
-This will output training progress and save the trained model in the models/ directory (e.g., models/nations/).
+This will output training progress and save the trained model in the `models/` directory (e.g., `models/nations/`).
 
-
-For more details, refer to the PyKEEN pipeline documentation.
+For more details, refer to the [PyKEEN pipeline documentation](https://pykeen.readthedocs.io/en/stable/api/pykeen.pipeline.pipeline.html#pykeen.pipeline.pipeline).
 
 #### 4. **Validate and use the model**
-The trained model is loaded dynamically in the API using the kge_model_loader.py script. The get_model function provides a convenient way to load models by combining the graph name and embedding model:
+The trained model is loaded dynamically in the API using the `kge_model_loader.py` script. The `get_model` function provides a convenient way to load models by combining the graph name and embedding model:
 ```python
 from kge_model_loader import get_model
 
 model = get_model(graph_name="nations", embedding_model="TransE")
 ```
-
 
 ## Try it out!
 - demo scripts
