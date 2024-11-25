@@ -31,12 +31,20 @@ This interface allows you to explore all available endpoints, see what data each
 Visit [fastAPI Interactive Docs Page](https://fastapi.tiangolo.com/#interactive-api-docs) for further details on this topic.
 
 ## Traing your Knowledge Graph Embedding Models
-You may encounter the 404: Model <model_name> not found error.
-Before using a model you should have a trained instance. Models are stored in the models folder by default.
+You may encounter the 404: Model <model_name> not found error. This happens because in roder for the API to work you should have a trained instance. Models are stored at the models folder by default.
+
+For accessing the model you should provide name for the Knowledge Graph in which the model is trained and the Embedding Model used to train the embeddings. (Check model_loader.py)
+
+Use the kge_model_train.py to train your embeddings. Open the script and modify the parameters.
+
+- pequeño ejemplo guiado con nations
+  
+the triples path should be a tsv file in which (incluir un ejemplo de fichero de triplas)
+
+
 Further information on pykeen documentation, check all available graphs and all available embedding models.
 Example: training an instance of the nations knowledge graph with transe embedding model
 
-the triples path should be a tsv file in which (incluir un ejemplo de fichero de triplas)
 
 ## Try it out!
 - demo scripts
