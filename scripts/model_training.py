@@ -96,7 +96,7 @@ def train_embedding_model(graph_name, dataset:str = "", embedding_model:str="Tra
 
 if __name__=="__main__":
 
-    models_route="../models" # directory where you store the trained kge models
+    models_route="models" # directory where you store the trained kge models
 
     train_embedding_model(graph_name="nations",
                           dataset="nations",
