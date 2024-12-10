@@ -86,9 +86,9 @@ from kge_model_loader import get_model
 
 model = get_model(graph_name="nations", embedding_model="TransE")
 ```
-[!WARNING]
->The parameter `embedding_model` is **hardcoded** in this version of the code. 
->If you need to modify this variable, you must manually update it in the `kge_model_loader.py` file.
+> [!WARNING]
+> The parameter `embedding_model` is **hardcoded** in this version of the code. 
+> If you need to modify this variable, you must manually update it in the `kge_model_loader.py` file.
 
 ## Try it out!
 - demo scripts
