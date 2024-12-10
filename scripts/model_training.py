@@ -16,7 +16,7 @@ def train_embedding_model(graph_name, dataset:str = "", embedding_model:str="Tra
     Train an embedding model using knowledge graph data.
 
     Args:
-        graph_name (str): A verbous name for the graph for saving the model.
+        graph_name (str): A verbous name for the graph used for saving the model.
         dataset (str, optional): Name of the Pykeen dataset to be used for training. Default is an empty string.
         embedding_model (str, optional): Name of the embedding model (e.g., 'TransE', 'ComplEx'). Default is 'TransE'.
         embedding_dim (int, optional): Dimension of the embedding vectors. Default is 3.
@@ -97,11 +97,13 @@ def train_embedding_model(graph_name, dataset:str = "", embedding_model:str="Tra
 if __name__=="__main__":
 
     models_route="models" # directory where you store the trained kge models
+    graph_name="nations_transe" # models are generally loaded in the api as "<graph_dataset>_<embedding_model>"
 
-    train_embedding_model(graph_name="nations",
+    train_embedding_model(graph_name=graph_name,
                           dataset="nations",
                           embedding_model="transe",
                           embedding_dim=5,
                           random_seed=1234,
                           models_route=models_route,
-                          triples_from_dataset=True)
+                          triples_from_dataset=True,
+                          device="cpu")

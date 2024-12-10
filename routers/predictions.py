@@ -9,8 +9,9 @@ router = APIRouter()
 
 @router.get("/link/{graph_name}/{head}/{tail}")
 def predict_link(graph_name:str,head:str,tail:str) -> list[Prediction]:
-    '''Predicts the relationship/link between two entities (head and tail). Returns the full predicted triplet (head, relation, tail) along with its score.
-    Returns a list of plausible triplets, sorted from higher to lower score.'''
+    '''Predicts the relationship/link between two entities (head and tail).
+    Returns a list of plausible triplets (head, relation, tail) along with their scores, 
+    sorted from higher to lower score.'''
 
     model=get_model(graph_name,embedding_model)
 
@@ -21,8 +22,9 @@ def predict_link(graph_name:str,head:str,tail:str) -> list[Prediction]:
 
 @router.get("/entity/{graph_name}/{head}/{link}")
 def predict_entity(graph_name:str,head:str,relationship:str) -> list[Prediction]:
-    '''Predicts the missing tail entity of a triplet given a head entity and a relation. Return the full predicted triplet (head, relation, tail) along with its score.
-    Returns a list of plausible triplets, sorted from higher to lower score.'''
+    '''Predicts the missing tail entity of a triplet given a head entity and a relation. 
+    Returns a list of plausible triplets (head, relation, tail) along with their scores, 
+    sorted from higher to lower score.'''
 
     model=get_model(graph_name,embedding_model)
 

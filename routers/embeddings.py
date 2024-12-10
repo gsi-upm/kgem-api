@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Body
 from pydantic_models import Embedding, Entity
 from EmbeddingsLib import calculate_embeddings,calculate_entity_from_embedding
 from kge_model_loader import get_model, embedding_model
@@ -19,7 +19,8 @@ def embedding_from_entity(graph_name: str, entity: str) -> Embedding:
 
 
 @router.post("/closest-entity/{graph_name}")
-def entity_from_embedding(graph_name: str,embedding:list[float]) -> list[Entity]:
+def entity_from_embedding(graph_name: str,
+                          embedding:list[float])-> list[Entity]:
     '''Find the closest entity to a given embedding vector within a specified graph.'''
     
     model = get_model(graph_name,embedding_model)
