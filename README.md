@@ -31,7 +31,7 @@ This interface allows you to explore all available endpoints, see what data each
 Visit [fastAPI Interactive Docs Page](https://fastapi.tiangolo.com/#interactive-api-docs) for further details on this topic.
 
 ## Training your Knowledge Graph Embedding Models
-To use the API, trained Knowledge Graph Embedding models must be available. These models are stored in the ``models/` directory by default. If you encounter an error like `404: Model <model_name> not found.`, it indicates that the model is either missing from this directory or not yet trained. 
+To use the API, trained Knowledge Graph Embedding models must be available. These models are stored in the `models/` directory by default. If you encounter an error like `404: Model <model_name> not found.`, it indicates that the model is either missing from this directory or not yet trained. 
 
 The `model_training.py` script provides an easy way to train and save embedding models using [PyKEEN](https://pykeen.readthedocs.io/en/stable/index.html). This library supports a wide range of [Knowledge Graph Embedding Models](https://pykeen.readthedocs.io/en/stable/reference/models.html) and [Knowledge Graph Datasets](https://pykeen.readthedocs.io/en/stable/reference/datasets.html)
 
@@ -86,6 +86,11 @@ from kge_model_loader import get_model
 
 model = get_model(graph_name="nations", embedding_model="TransE")
 ```
+## ⚠️ Warning
+
+The parameter `embedding_model` is **hardcoded** in this version of the code. 
+
+If you need to modify this variable, you must manually update it in the `kge_model_loader.py` file.
 
 ## Try it out!
 - demo scripts
