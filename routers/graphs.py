@@ -1,5 +1,6 @@
 from pydantic_models import Graph
 from fastapi import APIRouter, HTTPException
+from pykeen.datasets import get_dataset
 
 router = APIRouter()
 
@@ -32,6 +33,22 @@ def get_graph(graph_id: int) -> Graph:
     if graph_id < 0 or graph_id >= len(graphs):
         raise HTTPException(status_code=404, detail="Graph not found")
     return graphs[graph_id]
+
+
+@router.get("/{graph_id}/entity_list")
+def get_entity_list(graph_id: int):
+    # DE MOMENTO SOLO SE PUEDEN CARGAR DATASETS DE PYKEEN, PASANDO EL NOMBRE DEL DATASET
+    triples_factory = get_dataset(dataset=graphs[graph_id].name).training # buscar cómo cargar triples desde la url si se puede?
+    entity_labels = triples_factory.entity_id_to_label 
+    return entity_labels
+
+@router.get("/{graph_id}/relationship_list")
+def get_relation_list(graph_id: int):
+    triples_factory = get_dataset(dataset=graphs[graph_id].name).training
+    entity_labels = triples_factory.relation_id_to_label 
+    return entity_labels
+
+
 
 
 # @router.get("/graphs/by_entity/{entity}")
