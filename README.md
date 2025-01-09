@@ -91,5 +91,5 @@ model = get_model(graph_name="nations", embedding_model="TransE")
 > If you need to modify this variable, you must manually update it in the `kge_model_loader.py` file.
 
 ## Try it out!
-- demo scripts
-- importante falta información para la gente que no sabe las dimensiones de los embeddigs, cómo acceden a los grafos? poner ejemplos, cómo saben el nombre de las entidades? ilustrar con ejemplo
+
+The `demo.ipynb` Jupyter Notebook provides a short example of how you can access the API and create your own programs with Python. This notebook includes examples of how to interact with the API, make requests, and handle responses. It is a great starting point for understanding how to use the API in your own Python projects.
