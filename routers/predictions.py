@@ -20,7 +20,7 @@ def predict_link(graph_name:str,head:str,tail:str) -> list[Prediction]:
 
     return predictions
 
-@router.get("/entity/{graph_name}/{head}/{link}")
+@router.get("/entity/{graph_name}/{head}/{relationship}")
 def predict_entity(graph_name:str,head:str,relationship:str) -> list[Prediction]:
     '''Predicts the missing tail entity of a triplet given a head entity and a relation. 
     Returns a list of plausible triplets (head, relation, tail) along with their scores, 
