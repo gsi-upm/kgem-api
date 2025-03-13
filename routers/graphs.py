@@ -13,10 +13,13 @@ nations = Graph(id=0, name="Nations", description="Graph representation of relat
 dbpedia50 = Graph(id=1, name="DBpedia50", description="Graph containing structured information extracted from Wikipedia articles.", n_entities=24624, n_triples=34421, n_relations=351, 
                 dataset_url="https://raw.githubusercontent.com/ZhenfengLei/KGDatasets/master/DBpedia50")
 
-wikidata = Graph(id=2, name="Wikidata", description="Graph containing structured information extracted from Wikipedia articles.", n_entities=4594149, n_triples=20624239, n_relations=822, 
-                dataset_url="https://zenodo.org/record/5546383/files/wikidata5m_transductive.tar.gz")
+wikidata5m = Graph(id=2, name="Wikidata5m", description="Graph containing structured information extracted from Wikipedia articles. THIS IS A REDUCED VERSION WITH FILTERED TRIPLES.", n_entities=4594149, n_triples=20624239, n_relations=822, 
+                dataset_url="https://zenodo.org/record/5546383/files/wikidata5m_transductive.tar.gz") # grafo f del tfg
 
-graphs=[nations,dbpedia50,wikidata]
+wikidata50kt = Graph(id=3, name="wd50kt", description="The triples-only version of WD50K. Graph containing structured information extracted from Wikipedia articles.", n_entities=40107, n_triples=232344, n_relations=473, 
+                dataset_url="")
+
+graphs=[nations,dbpedia50,wikidata5m,wikidata50kt]
 
 
 
@@ -38,7 +41,7 @@ def get_graph(graph_id: int) -> Graph:
 @router.get("/{graph_id}/entity_list")
 def get_entity_list(graph_id: int):
     # DE MOMENTO SOLO SE PUEDEN CARGAR DATASETS DE PYKEEN, PASANDO EL NOMBRE DEL DATASET
-    triples_factory = get_dataset(dataset=graphs[graph_id].name).training # buscar cómo cargar triples desde la url si se puede?
+    triples_factory = get_dataset(dataset=graphs[graph_id].name).training
     entity_labels = triples_factory.entity_id_to_label 
     return entity_labels
 
