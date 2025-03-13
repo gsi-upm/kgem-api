@@ -1,5 +1,7 @@
 from pykeen.datasets import get_dataset
 from pykeen import predict
+from pykeen.triples import TriplesFactory
+
 
 import torch
 from typing import List
@@ -14,19 +16,26 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.spatial.distance import cdist
 
+from fastapi import HTTPException
+
 
 # embedding functions
 def calculate_embeddings(dataset,model,entity:str):
     ''' '''
+    try:
+        if dataset=="wikidata5m":
+            triples_factory = TriplesFactory.from_path("triples_factories/wikidata5m_filtered.tsv")
+        else:
+            triples_factory = get_dataset(dataset=dataset).training
+        entity_id = torch.as_tensor(triples_factory.entities_to_ids([entity]))
 
-    triples_factory = get_dataset(dataset=dataset).training
-    entity_id = torch.as_tensor(triples_factory.entities_to_ids([entity]))
-
-    entity_representation_modules: List['pykeen.nn.Representation'] = model.entity_representations
-    entity_embeddings: pykeen.nn.Embedding = entity_representation_modules[0]
-    entity_embedding_tensor: torch.FloatTensor = entity_embeddings(indices=entity_id).detach()[0]
-    
-    return entity_embedding_tensor
+        entity_representation_modules: List['pykeen.nn.Representation'] = model.entity_representations
+        entity_embeddings: pykeen.nn.Embedding = entity_representation_modules[0]
+        entity_embedding_tensor: torch.FloatTensor = entity_embeddings(indices=entity_id).detach()[0]
+        
+        return entity_embedding_tensor
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"Entity '{entity}' not found in graph {dataset}")
 
 def calculate_entity_from_embedding(dataset:str, model:str, target_embedding, k=10):
 
@@ -38,9 +47,9 @@ def calculate_entity_from_embedding(dataset:str, model:str, target_embedding, k=
     entity_embedding_tensor: torch.FloatTensor = entity_embeddings()
 
     target_embedding=torch.tensor([float(i) for i in target_embedding]) # convertir los datos de la api
-    #CALCULAR SIMILITUD DE COSENO (probar otras opciones para calcular similitud por is hay entidades muy parecidas, intervalos de confianza, etc)
+    #CALCULAR SIMILITUD DE COSENO (probar otras opciones para calcular similitud por si hay entidades muy parecidas, intervalos de confianza, etc)
 
-    similarities = F.cosine_similarity(target_embedding.unsqueeze(0), entity_embedding_tensor, dim=1)
+    similarities = F.cosine_similarity(target_embedding.unsqueeze(0), entity_embedding_tensor.cpu(), dim=1)
     #most_similar_index = torch.argmax(similarities).item()
     top_k_similarities, most_similar_indices = torch.topk(similarities, k=k)
     #most_similar_index=most_similar_indices[0]
