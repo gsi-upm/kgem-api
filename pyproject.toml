@@ -1,0 +1,20 @@
+[project]
+name = "gsi-app"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+web = [
+    "fastapi>=0.115.12",
+    "matplotlib>=3.10.1",
+    "numpy>=2.2.4",
+    "pydantic>=2.11.1",
+    "pykeen>=1.11.0",
+    "requests>=2.32.3",
+    "scipy>=1.15.2",
+    "torch>=2.6.0",
+    "tqdm>=4.67.1",
+    "uvicorn>=0.34.0",
+]
