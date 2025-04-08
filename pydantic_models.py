@@ -6,11 +6,6 @@ class Graph(BaseModel):
     """
     Schema representing an available Knowledge Graph with its metadata.
     """
-    id: int = Field(
-        ..., 
-        description="The unique identifier of the graph.",
-        example=1
-    )
     name: str = Field(
         ..., 
         description="The verbous name of the graph.",

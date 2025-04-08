@@ -38,11 +38,10 @@ class ModelRegistry:
                 else:
                     self._models[name] = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False)
             except FileNotFoundError:
-                raise HTTPException(status_code=404, detail=f"Model '{name}' not found")
+                raise HTTPException(status_code=404, detail=f"Model '{name}' not found. Try a different combination of graph and embedding model.")
         return self._models[name]
 
 model_registry = ModelRegistry()
-embedding_model = "transe" # change the embedding model used in the api
 
 def get_model(graph_name:str, embedding_model:str):
     """
@@ -62,3 +61,4 @@ def get_model(graph_name:str, embedding_model:str):
     """
     model_name=f"{graph_name}_{embedding_model}"
     return model_registry.load_model(model_name)
+

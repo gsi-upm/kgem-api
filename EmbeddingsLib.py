@@ -35,7 +35,7 @@ def calculate_embeddings(dataset,model,entity:str):
         
         return entity_embedding_tensor
     except KeyError:
-        raise HTTPException(status_code=404, detail=f"Entity '{entity}' not found in graph {dataset}")
+        raise HTTPException(status_code=404, detail=f"Entity '{entity}' not found in graph {dataset}.")
 
 def calculate_entity_from_embedding(dataset:str, model:str, target_embedding, k=10):
 
@@ -48,8 +48,10 @@ def calculate_entity_from_embedding(dataset:str, model:str, target_embedding, k=
 
     target_embedding=torch.tensor([float(i) for i in target_embedding]) # convertir los datos de la api
     #CALCULAR SIMILITUD DE COSENO (probar otras opciones para calcular similitud por si hay entidades muy parecidas, intervalos de confianza, etc)
-
-    similarities = F.cosine_similarity(target_embedding.unsqueeze(0), entity_embedding_tensor.cpu(), dim=1)
+    try:
+        similarities = F.cosine_similarity(target_embedding.unsqueeze(0), entity_embedding_tensor.cpu(), dim=1)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     #most_similar_index = torch.argmax(similarities).item()
     top_k_similarities, most_similar_indices = torch.topk(similarities, k=k)
     #most_similar_index=most_similar_indices[0]
@@ -69,12 +71,14 @@ def calculate_entity_from_embedding(dataset:str, model:str, target_embedding, k=
 def predict_missing_link(dataset:str, model, head, tail, k=5):
 
     triples_factory = get_dataset(dataset=dataset).training
-
-    df = predict.predict_target(
-    model=model,
-    head=head,
-    tail=tail,
-    triples_factory=triples_factory)
+    try:
+        df = predict.predict_target(
+        model=model,
+        head=head,
+        tail=tail,
+        triples_factory=triples_factory)
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"Either '{head}' or '{tail}' not found in graph {dataset}.")
 
     labels = df.df['relation_label'].tolist()[:k]
     scores = df.df['score'].tolist()[:k]
@@ -84,12 +88,14 @@ def predict_missing_link(dataset:str, model, head, tail, k=5):
 def predict_missing_tail(dataset:str, model, head, relationship, k=5):
 
     triples_factory = get_dataset(dataset=dataset).training
-
-    df = predict.predict_target(
-    model=model,
-    head=head,
-    relation=relationship,
-    triples_factory=triples_factory)
+    try:
+        df = predict.predict_target(
+        model=model,
+        head=head,
+        relation=relationship,
+        triples_factory=triples_factory)
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"Either Entity '{head}' or link '{relationship}' not found in graph {dataset}.")
 
     labels = df.df['tail_label'].tolist()[:k]
     scores = df.df['score'].tolist()[:k]
@@ -99,11 +105,13 @@ def predict_missing_tail(dataset:str, model, head, relationship, k=5):
 def predict_triplet_score(dataset:str, model, head, relationship,tail):
 
     triples_factory = get_dataset(dataset=dataset).training
-
-    prediction = predict.predict_triples(
-    model=model,
-    triples_factory=triples_factory,
-    triples=(head,relationship,tail),batch_size=1)
+    try:
+        prediction = predict.predict_triples(
+        model=model,
+        triples_factory=triples_factory,
+        triples=(head,relationship,tail),batch_size=1)
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"Either Entity '{head}' or Link '{relationship}' not found in graph {dataset}.")
 
     return prediction.scores[0]
 
@@ -140,9 +148,8 @@ def multiple_entity_cosine_similarity(dataset,model,entity_list1,entity_list2,si
             similarity = np.median(similarity_matrix)
         case "sum":
             similarity = np.sum(similarity_matrix)
-    
-    print(similarity_matrix)
-    print(similarity)
+        case _:
+            raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: average, min, max, median, sum.")        
 
     return similarity
 
@@ -151,7 +158,12 @@ def embeddings_cosine_similarity(embedding1,embedding2):
     embedding1=torch.tensor([float(i) for i in embedding1])
     embedding2=torch.tensor([float(i) for i in embedding2])
 
-    return F.cosine_similarity(embedding1, embedding2, dim=0).item()
+    try:
+        similarity = F.cosine_similarity(embedding1, embedding2, dim=0)
+        return similarity
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+    
 
 def multiple_embedding_cosine_similarity(embeddings1,embeddings2,similarity_metric="average"):
     

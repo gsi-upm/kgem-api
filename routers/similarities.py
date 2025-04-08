@@ -1,27 +1,27 @@
 from fastapi import APIRouter
 from EmbeddingsLib import calculate_embeddings,calculate_entity_from_embedding,entity_cosine_similarity, embeddings_cosine_similarity,multiple_entity_cosine_similarity, multiple_embedding_cosine_similarity
-from kge_model_loader import get_model,embedding_model
+from kge_model_loader import get_model
 from pydantic_models import Entity, CosineSimilarityResponse
 
 router = APIRouter()
 
 
-@router.get("/closest-entities/{graph_name}/{entity}")
-def get_closest_entities(graph_name:str,entity:str) -> list[Entity]:
-    '''Returns a list of the closest entities to the specified entity based on cosine similarity.'''
+@router.get("/closest-entities/{graph_name}/{embedding_model}/{entity}")
+def get_closest_entities(graph_name:str,embedding_model:str,entity:str,k:int) -> list[Entity]:
+    '''Returns a list of the k closest entities to the specified entity based on cosine similarity.'''
 
     model=get_model(graph_name,embedding_model)
 
     embedding=calculate_embeddings(graph_name,model,entity)
 
-    entities,similarities=calculate_entity_from_embedding(graph_name,model,embedding)
+    entities,similarities=calculate_entity_from_embedding(graph_name,model,embedding,k=k)
 
     entities=[{"name":label,"similarity":similarity.item()} for (label,similarity) in zip(entities,list(similarities))]
 
     return entities
 
-@router.get("/cosine-similarity/entities/{graph_name}/{entity1}/{entity2}", response_model=CosineSimilarityResponse)
-def get_cosine_similarity_from_entities(graph_name:str,entity1:str,entity2:str):
+@router.get("/cosine-similarity/entities/{graph_name}/{embedding_model}/{entity1}/{entity2}", response_model=CosineSimilarityResponse)
+def get_cosine_similarity_from_entities(graph_name:str,embedding_model:str,entity1:str,entity2:str):
     '''Computes the cosine similarity between two entities in the specified graph.'''
 
     model=get_model(graph_name,embedding_model)
@@ -37,8 +37,8 @@ def get_cosine_similarity_from_embeddings(embedding_1:list[float],embedding_2:li
 
     return {"similarity":similarity}
 
-@router.post("/cosine-similarity/entities/multiple/{graph_name}/{metric}", response_model=CosineSimilarityResponse)
-def get_cosine_similarity_multiple_entities(graph_name:str,entity_list1:list[str],entity_list2:list[str],metric:str):
+@router.post("/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/{metric}", response_model=CosineSimilarityResponse)
+def get_cosine_similarity_multiple_entities(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],metric:str):
     '''Computes cosine similarity between all pairs of entities from two lists of entities specified in the request body.
     The pairwise similarities are then aggregated using the specified metric.
     
@@ -47,7 +47,7 @@ def get_cosine_similarity_multiple_entities(graph_name:str,entity_list1:list[str
     model=get_model(graph_name,embedding_model)
     similarity=multiple_entity_cosine_similarity(graph_name,model,entity_list1,entity_list2,metric)
 
-    return {"similarity":similarity, "metric used":metric}
+    return {"similarity":similarity, "metric_used":metric}
 
 @router.post("/cosine-similarity/embeddings/multiple/{metric}", response_model=CosineSimilarityResponse)
 def get_cosine_similarity_multiple_embeddings(embedding_list1:list[float],embedding_list2:list[float],metric:str):
