@@ -12,9 +12,9 @@ def get_closest_entities(graph_name:str,embedding_model:str,entity:str,k:int) ->
 
     model=get_model(graph_name,embedding_model)
 
-    embedding=calculate_embeddings(graph_name,model,entity)
+    embedding=calculate_embeddings(model,entity)
 
-    entities,similarities=calculate_entity_from_embedding(graph_name,model,embedding,k=k)
+    entities,similarities=calculate_entity_from_embedding(model,embedding,k=k)
 
     entities=[{"name":label,"similarity":similarity.item()} for (label,similarity) in zip(entities,list(similarities))]
 
@@ -25,7 +25,7 @@ def get_cosine_similarity_from_entities(graph_name:str,embedding_model:str,entit
     '''Computes the cosine similarity between two entities in the specified graph.'''
 
     model=get_model(graph_name,embedding_model)
-    similarity=entity_cosine_similarity(graph_name,model,entity1,entity2)
+    similarity=entity_cosine_similarity(model,entity1,entity2)
 
     return {"similarity":similarity}
 
@@ -45,7 +45,7 @@ def get_cosine_similarity_multiple_entities(graph_name:str,embedding_model:str,e
     available metrics: average,min,max,median,sum'''
 
     model=get_model(graph_name,embedding_model)
-    similarity=multiple_entity_cosine_similarity(graph_name,model,entity_list1,entity_list2,metric)
+    similarity=multiple_entity_cosine_similarity(model,entity_list1,entity_list2,metric)
 
     return {"similarity":similarity, "metric_used":metric}
 

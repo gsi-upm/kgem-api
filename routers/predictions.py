@@ -14,7 +14,7 @@ def predict_link(graph_name:str,embedding_model:str,head:str,tail:str,k:int) -> 
 
     model=get_model(graph_name,embedding_model)
 
-    relationships,scores=predict_missing_link(graph_name,model,head,tail,k=k)
+    relationships,scores=predict_missing_link(model,head,tail,k=k)
     predictions=[{"head":head, "relationship":relationship, "tail": tail, "score":score} for relationship,score in zip(relationships,scores)]
 
     return predictions
@@ -27,7 +27,7 @@ def predict_entity(graph_name:str,embedding_model:str,head:str,relationship:str,
 
     model=get_model(graph_name,embedding_model)
 
-    tails,scores=predict_missing_tail(graph_name,model,head,relationship,k=k)
+    tails,scores=predict_missing_tail(model,head,relationship,k=k)
     predictions=[{"head":head, "relationship":relationship, "tail": tail, "score":score} for tail,score in zip(tails,scores)]
     return predictions
 
@@ -37,5 +37,5 @@ def get_triplet_score(graph_name:str,embedding_model:str,head:str,relationship:s
     
     model=get_model(graph_name,embedding_model)
 
-    score=predict_triplet_score(graph_name,model,head,relationship,tail)
+    score=predict_triplet_score(model,head,relationship,tail)
     return {"head":head, "relationship":relationship, "tail": tail, "score":score}

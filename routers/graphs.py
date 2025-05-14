@@ -3,6 +3,8 @@ from fastapi import APIRouter, HTTPException
 from pykeen.datasets import get_dataset
 from graph_loading_utils import *
 
+from kge_model_loader import get_model
+
 router = APIRouter()
 
 
@@ -28,7 +30,6 @@ router = APIRouter()
 @router.get("/")
 def list_graphs() -> list[Graph]:
     '''Retrieves a list of all available graph datasets detailing its ID, name, description, number of entities, triples, and relations..'''
-    # get_graph_metadata("dbpedia50")
     return get_pydantic_graphs()
 
 @router.get("/{graph_name}")
@@ -45,9 +46,12 @@ def get_graph(graph_name: str) -> Graph:
 
 @router.get("/{graph_name}/entity_list")
 def get_entity_list(graph_name: str):
-    # DE MOMENTO SOLO SE PUEDEN CARGAR DATASETS DE PYKEEN, PASANDO EL NOMBRE DEL DATASET
     try:
-        triples_factory = get_dataset(dataset=graph_name).training
+        # temporal:
+        if graph_name == "wikidataAMORset":
+            triples_factory = get_model(graph_name,"transe").triples_factory
+        else:
+            triples_factory = get_dataset(dataset=graph_name).training
         entity_labels = triples_factory.entity_id_to_label 
         return entity_labels
     except KeyError:
@@ -56,7 +60,11 @@ def get_entity_list(graph_name: str):
 @router.get("/{graph_name}/relationship_list")
 def get_relation_list(graph_name: str):
     try:
-        triples_factory = get_dataset(dataset=graph_name).training
+        # temporal:
+        if graph_name == "wikidataAMORset":
+            triples_factory = get_model(graph_name,"transe").triples_factory
+        else:
+            triples_factory = get_dataset(dataset=graph_name).training
         entity_labels = triples_factory.relation_id_to_label 
         return entity_labels
     except KeyError:

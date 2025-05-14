@@ -15,13 +15,13 @@ def get_centers(graph_name:str,embedding_model:str,entity_list1:list[str]):
 
     model=get_model(graph_name,embedding_model)
 
-    embeddings=[calculate_embeddings(graph_name,model,e) for e in entity_list1]
+    embeddings=[calculate_embeddings(model,e) for e in entity_list1]
     centers = calculate_centers(embeddings)
 
     for center_type in centers:
 
         # add closest entity
-        centers[center_type]["closest entity"]=calculate_entity_from_embedding(graph_name,model,centers[center_type]["point"],k=1)[0][0] # no devolver las similitudes, solo la primera entidad de la lista de entidades
+        centers[center_type]["closest entity"]=calculate_entity_from_embedding(model,centers[center_type]["point"],k=1)[0][0] # no devolver las similitudes, solo la primera entidad de la lista de entidades
 
         #transformar en numeros decimales para poder usarlos en la API
         centers[center_type]["point"]=[float(i) for i in centers[center_type]["point"]]
@@ -37,10 +37,10 @@ def get_overlap(graph_name:str,embedding_model:str,entity_list1:list[str],entity
     and shape of the overlapping area.'''
     model=get_model(graph_name,embedding_model)
 
-    embeddings1=[calculate_embeddings(graph_name,model,e) for e in entity_list1]
+    embeddings1=[calculate_embeddings(model,e) for e in entity_list1]
     centers_1 = calculate_centers(embeddings1,center_type)
 
-    embeddings2=[calculate_embeddings(graph_name,model,e) for e in entity_list2]
+    embeddings2=[calculate_embeddings(model,e) for e in entity_list2]
     centers_2= calculate_centers(embeddings2,center_type)
 
     center_1=centers_1[center_type]["point"]

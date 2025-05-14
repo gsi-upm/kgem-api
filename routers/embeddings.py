@@ -16,7 +16,7 @@ def embedding_from_entity(graph_name: str, embedding_model:str, entity: str) -> 
     """
     Retrieves the embedding vector for a given entity name within a specified graph."""
     model = get_model(graph_name,embedding_model)
-    embedding = calculate_embeddings(graph_name,model, entity)
+    embedding = calculate_embeddings(model, entity)
 
     #transformar en una lista de numeros decimales para poder usarlos en la API
     embedding=[float(i) for i in embedding]
@@ -33,7 +33,7 @@ def entity_from_embedding(graph_name: str,
     
     model = get_model(graph_name,embedding_model)
 
-    entities,similarities=calculate_entity_from_embedding(graph_name,model,embedding,k=k)
+    entities,similarities=calculate_entity_from_embedding(model,embedding,k=k)
     entities=[{"name":label,"similarity":similarity} for label,similarity in zip(entities,similarities)]
 
     return entities

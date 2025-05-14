@@ -2,7 +2,6 @@ import os
 from typing import List
 from pykeen.datasets import get_dataset
 from pydantic_models import Graph
-from docdata import get_docdata
 
 
 MODELS_DIR = "models" 
@@ -53,18 +52,29 @@ DATASET_INFO = {
         'description': 'The Countries dataset.',
         'dataset_url': 'https://github.com/ZhenfengLei/KGDatasets/tree/master/Countries',
     },
+    'wikidataAMORset':{
+        'description': 'A dummy subset from wikidata5m for using pre-trained embeddings of the entities in amor-graph.',
+        'dataset_url': ''
+    }
 }
 
 def get_graph_metadata(graph_name: str):
-    try:
-        dataset = get_dataset(dataset=graph_name)
-        
-        metadata = {
-            "name": dataset.metadata["name"],
-            "n_entities": dataset.num_entities,
-            "n_relations": dataset.num_relations,
-            "n_triples": sum(factory.num_triples for factory in [dataset.training, dataset.testing, dataset.validation] if factory),
-        }
+    try:     
+        if graph_name.lower() == "wikidataamorset": # Special case: custom graph not available in pykeen
+            metadata = {
+                "name": graph_name,
+                "n_entities": 325,
+                "n_relations": 1,
+                "n_triples": 0,
+            }
+        else:
+            dataset = get_dataset(dataset=graph_name) # Assume most of the graphs will be available in pykeen
+            metadata = {
+                "name": dataset.metadata["name"],
+                "n_entities": dataset.num_entities,
+                "n_relations": dataset.num_relations,
+                "n_triples": sum(factory.num_triples for factory in [dataset.training, dataset.testing, dataset.validation] if factory),
+            }
         
         # add description and dataset_url from DATASET_INFO if available
         if graph_name in DATASET_INFO:
@@ -78,7 +88,7 @@ def get_graph_metadata(graph_name: str):
         
     except Exception as e:
         print(f"Error loading dataset {graph_name}: {e}")
-        return None
+        raise e
     
 graph_list = None  # Cached list of Pydantic Graph objects
 
