@@ -9,7 +9,7 @@ ADD pyproject.toml pyproject.toml
 RUN uv sync --group web --frozen
 
 COPY routers ./routers
-COPY EmbeddingsLib.py kge_model_loader.py main.py pydantic_models.py ./
+COPY EmbeddingsLib.py kge_model_loader.py main.py pydantic_models.py graph_loading_utils.py ./
 
 EXPOSE 8000
 
