@@ -28,6 +28,7 @@ dist/
 # Ignore Git and VCS
 .git/
 .gitignore
+README.md
 
 # Avoid copying models if you're mounting them
 models/
