@@ -12,6 +12,9 @@ env/
 *.exe
 *.bin
 *.log
+*.json
+*.pkl
+*.tsv
 
 .vscode/
 models/*

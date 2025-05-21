@@ -34,7 +34,7 @@ def get_centers(graph_name:str,embedding_model:str,entity_list1:list[str]):
 @router.post("/overlap/{graph_name}/{embedding_model}/{center_type}/{radius_type}")
 def get_overlap(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],center_type:str,radius_type:str):
     '''Computes the overlapping area between two groups of entities based on their centers and radii. 
-    The center can be specified as either "centroid" (center of mass) or "geometric median" (a more central point). 
+    The center can be specified as either "centroid" (center of mass) or "geometric_median" (a more central point). 
     The radius can be specified as either "mean", "median" or "max" distances between both centers.
     The choice of center and radius affects the size and shape of the overlapping area.'''
     model=get_model(graph_name,embedding_model)
