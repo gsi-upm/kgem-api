@@ -1,4 +1,4 @@
-# kgem-api-gsi
+# kgem-api
 An API for easy access to Knowledge Graphs and operations with Knowledge Graph Embedding Models. This API provides a set of endpoints for interacting with and performing operations and requests on different Knowledge Graphs. It supports operations for listing available graph datasets, retrieving embedding from a certain entity, link prediction and more.
 
 This work is part of the [AMOR project](https://www.gsi.upm.es/es/investigacion/proyectos?view=project&task=show&id=108) of the Intelligent Systems Group.

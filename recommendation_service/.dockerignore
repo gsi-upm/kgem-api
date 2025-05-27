@@ -1,0 +1,35 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore model training artifacts (if not using volume)
+*.ipynb
+*.csv
+*.json
+*.log
+*.h5
+*.pt
+*.onnx
+*.pkl
+
+# Ignore system files
+.DS_Store
+.env
+.env.*
+*.swp
+
+# Ignore local tooling
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Ignore Git and VCS
+.git/
+.gitignore
+README.md
+
+# Avoid copying models if you're mounting them
+models/
