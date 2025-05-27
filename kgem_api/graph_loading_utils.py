@@ -84,11 +84,12 @@ def get_graph_metadata(graph_name: str):
             metadata["description"] = "No description available"
             metadata["dataset_url"] = "No URL available"
         
+        print(f"\n returning metadata:{metadata}")
         return metadata
         
     except Exception as e:
         print(f"Error loading dataset {graph_name}: {e}")
-        raise e
+        #raise e
     
 graph_list = None  # Cached list of Pydantic Graph objects
 

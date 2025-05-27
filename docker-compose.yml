@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  kgem-api:
+    build:
+      context: ./kgem_api
+    container_name: kgem-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./kgem_api/models:/app/models 
+    restart: always
+
+  recommendation_service:
+    build:
+      context: ./recommendation_service
+    container_name: recommendation_service
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./recommendation_service/models:/app/models
+    environment:
+      - KGE_API_BASE=http://kgem-api:8000
+    depends_on:
+      - kgem-api
+    restart: always
