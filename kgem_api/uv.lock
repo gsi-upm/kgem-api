@@ -85,11 +85,14 @@ wheels = [
 
 [[package]]
 name = "class-resolver"
-version = "0.5.4"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a0/b1/d61149da081b120d764047e590ea7a37fa504aff6735a2f22fdbdb3f0a9c/class_resolver-0.5.4.tar.gz", hash = "sha256:e09dc2ea33712f1c2dd151671cb6dc8e68777be80c1136c9748eacb84f83d638", size = 43459 }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c3/04/08fef0f202d53dd31c3e7fd0f7583dc78f964c7df37fa75fdbfec88f6419/class_resolver-0.6.0.tar.gz", hash = "sha256:8a3c20ab771925477f65cad8a49bb431e11543c82fbfadbf611c6769228a6cae", size = 26329 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/a0/5cdcbb4817e940496d957bd1eb515d17b34001559b9d5af0d6fe315f87f4/class_resolver-0.5.4-py3-none-any.whl", hash = "sha256:d0893e145a925a6b11d1c5f5b0ddbba35eb30788e68a800fb6cf91d348f47592", size = 29272 },
+    { url = "https://files.pythonhosted.org/packages/d6/04/78665fa7571959ef2ac0a69d08b3df1a8c44aeb9ee38e7eff7bad4606fa6/class_resolver-0.6.0-py3-none-any.whl", hash = "sha256:cc629187a10bacff2e360939f8a4e8e7d209583dc8b318485ff91a0d24d5c9d0", size = 31648 },
 ]
 
 [[package]]
@@ -202,14 +205,14 @@ wheels = [
 
 [[package]]
 name = "docdata"
-version = "0.0.4"
+version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/dc/2f1fc80d7541e3f033c65220cb556a11be2d76a8f5843c79b3ff94d526c2/docdata-0.0.4.tar.gz", hash = "sha256:270ace9349e2a71c2bd38c83fd9437cd4cbd1c4fb765016138976f0898c4f457", size = 15351 }
+sdist = { url = "https://files.pythonhosted.org/packages/c1/c2/c02a327fe52bab2d4a7c0a10030d8152f2d2a9e2848ea8ec57c4a5b1f266/docdata-0.0.5.tar.gz", hash = "sha256:ff3b963ab3f8b47476891fa01796828f8b16b10d6605e731690c5e1b5d3e0683", size = 15446 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/cf/f801261e6e99e88c454fb9a392b2ae53f093ab00f6821bd3ba19dadcf895/docdata-0.0.4-py3-none-any.whl", hash = "sha256:0ea775720cf1487fe83ea554af46183f61fd713175cb8c53ae6000a2e9ea049f", size = 9126 },
+    { url = "https://files.pythonhosted.org/packages/20/d6/ffc73563941fea7bc2bc5c0afe425d5b24a2a4c2348693125cb061fe4425/docdata-0.0.5-py3-none-any.whl", hash = "sha256:7e54713b4fe8d87b6483cafa83a6f119344a4f3163799de08b8cb97436a215be", size = 9168 },
 ]
 
 [[package]]
@@ -306,9 +309,7 @@ wheels = [
 name = "gsi-app"
 version = "0.1.0"
 source = { virtual = "." }
-
-[package.dev-dependencies]
-web = [
+dependencies = [
     { name = "fastapi" },
     { name = "matplotlib" },
     { name = "numpy" },
@@ -322,14 +323,12 @@ web = [
 ]
 
 [package.metadata]
-
-[package.metadata.requires-dev]
-web = [
+requires-dist = [
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "matplotlib", specifier = ">=3.10.1" },
     { name = "numpy", specifier = ">=2.2.4" },
     { name = "pydantic", specifier = ">=2.11.1" },
-    { name = "pykeen", specifier = ">=1.11.0" },
+    { name = "pykeen", specifier = ">=1.11.1" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "scipy", specifier = ">=1.15.2" },
     { name = "torch", specifier = ">=2.6.0" },
@@ -888,7 +887,7 @@ wheels = [
 
 [[package]]
 name = "pykeen"
-version = "1.11.0"
+version = "1.11.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "class-resolver" },
@@ -913,9 +912,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/b3/a508f63b811d874488733514175b72b74716e69ee495731ebd49b63672ce/pykeen-1.11.0.tar.gz", hash = "sha256:0369fb7b1cde4ce0893d786c1240d8c5632b9362a01e7db52f0fb8fd08552fd3", size = 2050259 }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/e6/4d551adf0c600e79467c3c1a6a8a5164534399c92d5d1464903785c5e0c9/pykeen-1.11.1.tar.gz", hash = "sha256:702cb807c354a0d2fce0f0593db46e1fe15fba2a37e92bbb18cd1b9d0a85fe13", size = 2083150 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/fd/7a5fff6f74ecd66dae351488d4ef5a9f04c6f3b07dad11ca8df3af7090f5/pykeen-1.11.0-py3-none-any.whl", hash = "sha256:0796187068ee40dee8bb9e8e95d92bf6b51ae27bf9769f864b32e2d335684d3c", size = 718423 },
+    { url = "https://files.pythonhosted.org/packages/10/53/7f38ff5559822f774b733ee20f908b7a227434e553b02d8e28c50afeda69/pykeen-1.11.1-py3-none-any.whl", hash = "sha256:b6cc0ab012fc6ba4f37b58fb7081a409a5c1f04cbbb0e0e9c2256e911757d4ba", size = 730295 },
 ]
 
 [[package]]
@@ -1208,15 +1207,15 @@ wheels = [
 
 [[package]]
 name = "torch-max-mem"
-version = "0.1.3"
+version = "0.1.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "torch" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5a/5d/ec735a0ecaf3a80e653d23ec31fe88e3b10d48539804dd7377bd189db8ab/torch_max_mem-0.1.3.tar.gz", hash = "sha256:ae03e1626327f7001130c943b9aa40134a02450b3019a4e6e87c61e9dc3ebef1", size = 17966 }
+sdist = { url = "https://files.pythonhosted.org/packages/72/9f/ef897565778fe2df00e426ea2f0515625e563779440e92c56afc254b2795/torch_max_mem-0.1.4.tar.gz", hash = "sha256:3c0a062a7166d4f50e8eaf2ba33fc6f3c5c2351daec630508de3efe844562827", size = 13067 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1b/5c/7d13deed73e02f71ec418cdd9fd40e4500624fd61bd250bffac589471da1/torch_max_mem-0.1.3-py3-none-any.whl", hash = "sha256:61cfdd352bd9d3710f43e912388c688c102ae725599eb4bfdb0a5889c396dbf5", size = 10915 },
+    { url = "https://files.pythonhosted.org/packages/5a/83/05f926ffaa76d93dd43fd3cc380a2d874dcfcd182b77e3b0fc5e168dbe97/torch_max_mem-0.1.4-py3-none-any.whl", hash = "sha256:23f66b7bb5d3ffbd514d64a1379c6d60007718d85819a8b6697d55149167c0d0", size = 13015 },
 ]
 
 [[package]]

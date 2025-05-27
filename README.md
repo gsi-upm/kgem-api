@@ -18,19 +18,21 @@ Explore the full API at [`kgem_api/`](./kgem_api/).
 
 ## Use Case: `recommendation_service/`
 
-A microservice that consumes the KGEM-API to power a news recommendation use case.  
-It takes two sets of **Wikidata entity IDs** (one for each article) and performs:
+A microservice that consumes the KGEM-API to power a straightforward news recommendation use case.  
+It takes two sets of **graph entity IDs** (one for each article) and performs:
+
+Falta diagrama
 
 - Feature extraction using `kgem_api`
 - ML-based **classification** (good/bad recommendation) or **regression** (relevance score)
 
-🧾 Based on the work in: [Implementation and Evaluation of Knowledge Graph-Based Models for News Recommendation (Undergraduate Thesis)](https://www.gsi.upm.es/es/investigacion/publicaciones)
+🧾 Based on the work in: [Implementation and Evaluation of Knowledge Graph-Based Models for News Recommendation (Undergraduate Thesis)](https://www.gsi.upm.es/es/investigacion/publicaciones?view=publication&task=show&id=692)
 
 More details in [`recommendation_service/`](./recommendation_service/).
 
 ## ⚙️ Getting started
 
-### Recommended: Docker Compose (runs both services together)
+### Recommended: Docker Compose
 
 ```bash
 git clone https://github.com/your-user/kgem-api-gsi.git
@@ -61,6 +63,8 @@ uv run python -m uvicorn main:app --reload --port 8002
 
 💡 Use different ports (default is `8000`).
 
+The command `uvicorn main:app --reload` starts a development server for the FastAPI application. It tells Uvicorn to look for the app instance in the `main.py` file and serves it on the default port (8000). The `--reload` flag enables auto-reloading, so the server restarts automatically whenever you make changes to the code. Check [FastAPI documentation](https://fastapi.tiangolo.com/) for further information.
+
 ---
 
 ## API Interactive Documentation
@@ -68,10 +72,11 @@ uv run python -m uvicorn main:app --reload --port 8002
 FastAPI provides an interactive documentation available at:
 
 - **KGEM API**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Recommendation Service**: [http://localhost:8001/docs](http://localhost:8001/docs)
+- **Recommendation Service**: [http://localhost:8002/docs](http://localhost:8002/docs)
 
 After clicking on the link you should see something like this:
-![image](https://github.com/user-attachments/assets/88abb0e0-b170-49b8-ae69-2aa52126d74d)
+
+![image](![alt text](fastapi_interactive_docs.png))
 
 This interface allows you to explore all available endpoints, see what data each one accepts, and view the expected responses. You can even test the API directly from your browser by sending requests and seeing the results in real-time, in a user-friendly way :)
 

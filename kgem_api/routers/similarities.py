@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.get("/closest-entities/{graph_name}/{embedding_model}/{entity}")
-def get_closest_entities(graph_name:str,embedding_model:str,entity:str,k:int) -> list[Entity]:
+def get_closest_entities(graph_name:str,embedding_model:str,entity:str,k:int=5) -> list[Entity]:
     '''Returns a list of the k closest entities to the specified entity based on cosine similarity.'''
 
     model=get_model(graph_name,embedding_model)

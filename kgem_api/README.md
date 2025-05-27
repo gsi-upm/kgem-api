@@ -1,36 +1,8 @@
 # kgem-api
 An API for easy access to Knowledge Graphs and operations with Knowledge Graph Embedding Models. This API provides a set of endpoints for interacting with and performing operations and requests on different Knowledge Graphs. It supports operations for listing available graph datasets, retrieving embedding from a certain entity, link prediction and more.
 
-This work is part of the [AMOR project](https://www.gsi.upm.es/es/investigacion/proyectos?view=project&task=show&id=108) of the Intelligent Systems Group.
+## API Documentation
 
-## Quick set up
-Clone this repository:
-```bash
-$ cd git clone https://github.com/rjvillen/kgem-api-gsi.git
-```
-Create a virtual environment in the project directory. The example uses venv. However, you can use any virtual environment of your preference. 
-```bash
-$ cd /path/to/project
-$ python3 -m venv venv && source venv/bin/activate
-$ pip install requirements.txt
-```
-Use this command to run the API:
-```bash
-$ uvicorn  main:app --reload
-```
-The command `uvicorn main:app --reload` starts a development server for the FastAPI application. It tells Uvicorn to look for the app instance in the `main.py` file and serves it on the default port (8000). The `--reload` flag enables auto-reloading, so the server restarts automatically whenever you make changes to the code. Check [FastAPI documentation](https://fastapi.tiangolo.com/) for further information.
-
-The API should now be accessible at [http://127.0.0.1:8000](http://127.0.0.1:8000).
-
-## API Interactive Documentation
-FastAPI provides an interactive documentation available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-
-After clicking on the link you should see something like this:
-![image](https://github.com/user-attachments/assets/88abb0e0-b170-49b8-ae69-2aa52126d74d)
-
-This interface allows you to explore all available endpoints, see what data each one accepts, and view the expected responses. You can even test the API directly from your browser by sending requests and seeing the results in real-time, in a user-friendly way :)
-
-Visit [fastAPI Interactive Docs Page](https://fastapi.tiangolo.com/#interactive-api-docs) for further details on this topic.
 
 ## Training your Knowledge Graph Embedding Models
 To use the API, trained Knowledge Graph Embedding models must be available. These models are stored in the `models/` directory by default. If you encounter an error like `404: Model <model_name> not found.`, it indicates that the model is either missing from this directory or not yet trained. 
@@ -88,10 +60,39 @@ from kge_model_loader import get_model
 
 model = get_model(graph_name="nations", embedding_model="TransE")
 ```
-> [!WARNING]
-> The parameter `embedding_model` is **hardcoded** in this version of the code. 
-> If you need to modify this variable, you must manually update it in the `kge_model_loader.py` file.
+### Use pretrained embeddings
+
+Sometimes you may prefer to use good-quality pretrained embeddings from external sources instead of training your own from scratch.
+
+For this purpose, you can use the script `load_pretrained.py`, which takes a `.json` file like:
+
+```json
+{
+  "Q42": [0.1, 0.2, 0.3],
+  "Q123": [0.4, 0.5, 0.6]
+}
+```
+
+Edit the script to set:
+
+```python
+path_to_pretrained_embeddings = "pretrained_embeddings/your_embeddings.json"
+embedding_model = "transe"
+output_dir = f"models/wikidataAMORset_{embedding_model}"
+```
+
+Then run:
+
+```bash
+python scripts/load_pretrained.py
+```
+
+The script will:
+- Initialize a PyKEEN model with the pretrained vectors
+- Save it to the specified `models/` folder (used later by the API)
+- Require no actual triples or training (epochs=0)
+
 
 ## Try it out!
 
-The `demo.ipynb` Jupyter Notebook provides a short example of how you can access the API and create your own programs with Python. This notebook includes examples of how to interact with the API, make requests, and handle responses. It is a great starting point for understanding how to use the API in your own Python projects.
+The `demo.ipynb` Jupyter Notebook provides a short example on how you can access the API and create your own programs with Python. This notebook includes examples of how to interact with the API, make requests, and handle responses. It is a great starting point for understanding how to use the API in your own Python projects.

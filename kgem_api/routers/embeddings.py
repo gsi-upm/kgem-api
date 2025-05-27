@@ -28,7 +28,7 @@ def embedding_from_entity(graph_name: str, embedding_model:str, entity: str) -> 
 def entity_from_embedding(graph_name: str,
                           embedding_model:str,
                           embedding:list[float],
-                          k: int)-> list[Entity]:
+                          k: int=5)-> list[Entity]:
     '''Find the k closests entities to a given embedding vector within a specified graph.'''
     
     model = get_model(graph_name,embedding_model)
