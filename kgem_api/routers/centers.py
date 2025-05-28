@@ -7,16 +7,18 @@ router = APIRouter()
 
 
 @router.post("/{graph_name}/{embedding_model}")
-def get_centers(graph_name:str,embedding_model:str,entity_list1:list[str]):
+def get_centers(graph_name:str,embedding_model:str,entity_list:list[str],raise_on_missing:bool=True):
     '''Computes the center point in the embedding space for a given list of entities. 
     The response includes two types of center points: the geometric median and the centroid. 
     Both center points are represented by their embedding vectors and additional metadata such 
-    as the cluster radius (can be meand, median or maximum distance to the entity emebddings) 
+    as the cluster radius (can be mean, median or maximum distance to the entity emebddings) 
     and the closest entity to that point.'''
 
     model=get_model(graph_name,embedding_model)
 
-    embeddings=[calculate_embeddings(model,e) for e in entity_list1]
+    embeddings=[calculate_embeddings(model,e,raise_on_missing) for e in entity_list] 
+    entity_list = [ent for ent,emb in zip(entity_list,embeddings) if emb is not None]
+    embeddings = [e for e in embeddings if e is not None]
     centers = calculate_centers(embeddings)
 
     for center_type in centers:
@@ -28,21 +30,25 @@ def get_centers(graph_name:str,embedding_model:str,entity_list1:list[str]):
         centers[center_type]["point"]=[float(i) for i in centers[center_type]["point"]]
         centers[center_type]["radii"]={k:float(v) for k,v in centers[center_type]["radii"].items()}
 
-    return {"input entities":entity_list1} | centers
+    return {"input entities":entity_list} | centers
 
 
 @router.post("/overlap/{graph_name}/{embedding_model}/{center_type}/{radius_type}")
-def get_overlap(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],center_type:str,radius_type:str):
+def get_overlap(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],center_type:str="centroid",radius_type:str="mean",raise_on_missing:bool=True):
     '''Computes the overlapping area between two groups of entities based on their centers and radii. 
     The center can be specified as either "centroid" (center of mass) or "geometric_median" (a more central point). 
     The radius can be specified as either "mean", "median" or "max" distances between both centers.
     The choice of center and radius affects the size and shape of the overlapping area.'''
     model=get_model(graph_name,embedding_model)
 
-    embeddings1=[calculate_embeddings(model,e) for e in entity_list1]
+    embeddings1=[calculate_embeddings(model,e, raise_on_missing) for e in entity_list1] 
+    entity_list1 = [ent for ent,emb in zip(entity_list1,embeddings1) if emb is not None]
+    embeddings1 = [e for e in embeddings1 if e is not None]
     centers_1 = calculate_centers(embeddings1,center_type)
 
-    embeddings2=[calculate_embeddings(model,e) for e in entity_list2]
+    embeddings2=[calculate_embeddings(model,e, raise_on_missing) for e in entity_list2]
+    entity_list2 = [ent for ent,emb in zip(entity_list2,embeddings2) if emb is not None]
+    embeddings2 = [e for e in embeddings2 if e is not None]
     centers_2= calculate_centers(embeddings2,center_type)
 
     center_1=centers_1[center_type]["point"]
@@ -69,15 +75,19 @@ def get_overlap(graph_name:str,embedding_model:str,entity_list1:list[str],entity
 
 # nuevo endpoint que devuelva al distancia entre los centros de ambos clusters
 @router.post("/distance/{graph_name}/{embedding_model}/{center_type}")
-def get_center_distance(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],center_type:str):
+def get_center_distance(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],center_type:str="centroid",raise_on_missing:bool=True):
     '''Computes the euclidean distance between the centers of two clusters of entities.'''
     
     model=get_model(graph_name,embedding_model)
 
-    embeddings1=[calculate_embeddings(model,e) for e in entity_list1]
+    embeddings1=[calculate_embeddings(model,e,raise_on_missing) for e in entity_list1]
+    entity_list1 = [ent for ent,emb in zip(entity_list1,embeddings1) if emb is not None]
+    embeddings1 = [e for e in embeddings1 if e is not None]
     centers_1 = calculate_centers(embeddings1,center_type)
 
-    embeddings2=[calculate_embeddings(model,e) for e in entity_list2]
+    embeddings2=[calculate_embeddings(model,e,raise_on_missing) for e in entity_list2]
+    entity_list2 = [ent for ent,emb in zip(entity_list2,embeddings2) if emb is not None]
+    embeddings2 = [e for e in embeddings2 if e is not None]
     centers_2= calculate_centers(embeddings2,center_type)
 
     center_1=centers_1[center_type]["point"]

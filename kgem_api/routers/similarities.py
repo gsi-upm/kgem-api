@@ -38,14 +38,14 @@ def get_cosine_similarity_from_embeddings(embedding_1:list[float],embedding_2:li
     return {"similarity":similarity}
 
 @router.post("/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/{metric}", response_model=CosineSimilarityResponse)
-def get_cosine_similarity_multiple_entities(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],metric:str):
+def get_cosine_similarity_multiple_entities(graph_name:str,embedding_model:str,entity_list1:list[str],entity_list2:list[str],metric:str,raise_on_missing:bool=True):
     '''Computes cosine similarity between all pairs of entities from two lists of entities specified in the request body.
     The pairwise similarities are then aggregated using the specified metric.
     
     available metrics: mean,min,max,median,sum'''
 
     model=get_model(graph_name,embedding_model)
-    similarity=multiple_entity_cosine_similarity(model,entity_list1,entity_list2,metric)
+    similarity=multiple_entity_cosine_similarity(model,entity_list1,entity_list2,metric,raise_on_missing)
 
     return {"similarity":similarity, "metric_used":metric}
 
@@ -53,7 +53,7 @@ def get_cosine_similarity_multiple_entities(graph_name:str,embedding_model:str,e
 def get_cosine_similarity_multiple_embeddings(embedding_list1:list[float],embedding_list2:list[float],metric:str):
     '''Calculates the cosine similarity between two groups of embedding vectors. The similarity scores are aggregated 
     using the specified metric.
-    
+    raise_on_missing: if True, raises an error if the entity is not within the graph. If False, it performs the aggregation ignoring all missing entities.
     available metrics: mean,min,max,median,sum'''
 
     similarity=multiple_embedding_cosine_similarity(embedding_list1,embedding_list2,metric)

@@ -24,7 +24,7 @@ from pprint import pprint
 
 
 # embedding functions
-def calculate_embeddings(model,entity:str):
+def calculate_embeddings(model,entity:str,raise_on_missing=True):
     ''' '''
     try:        
         # entity_id = torch.as_tensor(triples_factory.entities_to_ids([entity]))
@@ -37,7 +37,10 @@ def calculate_embeddings(model,entity:str):
         return entity_embedding_tensor
     
     except KeyError:
-        raise HTTPException(status_code=404, detail=f"Entity '{entity}' not found in graph.")
+        if raise_on_missing:
+            raise HTTPException(status_code=404, detail=f"Entity '{entity}' not found in graph.")
+        else:
+            return None
 
 def calculate_entity_from_embedding(model:str, target_embedding, k=10):
     #OBTENER VETOR CON LA REPRESENTACIÓN DE TODAS LAS ENTIDADES
@@ -130,25 +133,34 @@ def entity_cosine_similarity(model,entity1,entity2):
 
     return similarity.item()
 
-def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity_metric="mean"):
+def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity_metric="mean",raise_on_missing=True):
     
     similarity_matrix = np.zeros((len(entity_list1), len(entity_list2)))
 
     for i in range(len(entity_list1)):
         for j in range(len(entity_list2)):
-            similarity_matrix[i, j] = entity_cosine_similarity(model,entity_list1[i],entity_list2[j])
+            try:
+                similarity_matrix[i, j] = entity_cosine_similarity(model,entity_list1[i],entity_list2[j])
+            except HTTPException as e: # raise an HTTPException if an entity is not found
+                if raise_on_missing:
+                    raise e
+                else:
+                    similarity_matrix[i, j] = np.nan
+    
+    if np.isnan(similarity_matrix).all():
+        raise HTTPException(status_code=404, detail="All values from the matrix are NaN because none of the entities in the list were found in graph.")
     
     match similarity_metric:
         case "mean":
-            similarity = np.mean(similarity_matrix)
+            similarity = np.nanmean(similarity_matrix) # use nanmean to ignore nan values in calculations
         case "min":
-            similarity = np.min(similarity_matrix)
+            similarity = np.nanmin(similarity_matrix)
         case "max":
-            similarity = np.max(similarity_matrix)
+            similarity = np.nanmax(similarity_matrix)
         case "median":
-            similarity = np.median(similarity_matrix)
+            similarity = np.nanmedian(similarity_matrix)
         case "sum":
-            similarity = np.sum(similarity_matrix)
+            similarity = np.nansum(similarity_matrix)
         case _:
             raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: mean, min, max, median, sum.")        
 
@@ -225,6 +237,8 @@ def calculate_radius(embeddings,center,radius_type="mean"):
 def calculate_centers(embeddings, center_type="all"):
     '''If center_type == all returns all centers.
     implemented centers: centroid, geometric.'''    
+    if len(embeddings) == 0:
+        raise HTTPException(status_code=400, detail="No embeddings were provided. These may happen if raise_on_missing = False but none of the entities from the cluster appear within the graph. Try a differnt set of entities or set raise_on_missing = True.")
     
     embeddings = torch.stack(embeddings) # stack the list of embeddings to a single tensor
 

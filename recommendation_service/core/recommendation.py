@@ -5,6 +5,7 @@ from fastapi import HTTPException
 
 import os
 from dotenv import load_dotenv
+import json
 
 
 load_dotenv()
@@ -14,12 +15,12 @@ def get_features(entities1, entities2, feature_names, graph_name="wikidataAMORse
         
     payload = {
         "entity_list1": entities1,
-        "entity_list2": entities2
+        "entity_list2": entities2,
     }
 
     map_endpoint = {
         # cosine similarity feature endpoints
-        "mean": f"{KGE_API_BASE}/similarities/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/average",
+        "mean": f"{KGE_API_BASE}/similarities/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/mean",
         "max": f"{KGE_API_BASE}/similarities/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/max",
         "median": f"{KGE_API_BASE}/similarities/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/median",
         "sum": f"{KGE_API_BASE}/similarities/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/sum",
@@ -39,12 +40,12 @@ def get_features(entities1, entities2, feature_names, graph_name="wikidataAMORse
         if feature in map_endpoint:
             #print(f"Fetching feature {feature} from {map_endpoint[feature]}")
             try:
-                response = requests.post(map_endpoint[feature], json=payload)
+                response = requests.post(map_endpoint[feature], json=payload, params={"raise_on_missing": False})
                 response.raise_for_status()
             except requests.exceptions.HTTPError as http_err:
                 raise HTTPException(
                     status_code=response.status_code,
-                    detail=f"External API error for feature '{feature}': {response.text}")
+                    detail=f"External API error for feature '{feature}': {json.loads(response.text)["detail"]}")
             
             if response.status_code == 200:
                 #print(response.json())
@@ -54,21 +55,27 @@ def get_features(entities1, entities2, feature_names, graph_name="wikidataAMORse
                     features[feature] = response.json()["overlap-ratio"]
                 elif "distance" in map_endpoint[feature]:
                     features[feature] = response.json()["euclidean distance"]
+                    used_entities = {"cluster 1":response.json()["cluster 1"]["input entities"],
+                                 "cluster 2":response.json()["cluster 2"]["input entities"]}
+                
             else:
                 raise HTTPException(f"Error fetching feature {feature}: {response.text}")
         else:
-            raise HTTPException(f"Feature {feature} not found in the mapping.")
+            raise HTTPException(f"Feature {feature} not found in the mapping.")    
     
-    return features
+    return features,used_entities
 
 def predict(data):
     model = get_model(data.model_name.value, data.mode.value)
-    features = get_features(data.news1_entities, data.news2_entities, feature_names=model.feature_names_in_)
+    features,used_entities = get_features(data.news1_entities, data.news2_entities, feature_names=model.feature_names_in_, graph_name=data.graph, embedding_model=data.embedding_model)
     score = model.predict(pd.DataFrame([features]))[0]
     return {
         "relevance_score": score,
         "model_used": data.model_name.value,
         "mode": data.mode.value,
+        "graph": data.graph,
+        "embedding_model": data.embedding_model,
+        "used_entities": used_entities,
         "features": features
     }
 
