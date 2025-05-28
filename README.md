@@ -76,7 +76,7 @@ FastAPI provides an interactive documentation available at:
 
 After clicking on the link you should see something like this:
 
-![image](![alt text](fastapi_interactive_docs.png))
+![image](images/fastapi_interactive_docs.png)
 
 This interface allows you to explore all available endpoints, see what data each one accepts, and view the expected responses. You can even test the API directly from your browser by sending requests and seeing the results in real-time, in a user-friendly way :)
 

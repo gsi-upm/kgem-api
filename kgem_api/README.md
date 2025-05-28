@@ -3,6 +3,70 @@ An API for easy access to Knowledge Graphs and operations with Knowledge Graph E
 
 ## API Documentation
 
+### Graphs
+
+| Endpoint | Method | Description |
+|---------|--------|-------------|
+| `/` | GET | Returns a list of available graph datasets. |
+| `/{graph_name}` | GET | Returns metadata for the specified graph. |
+| `/{graph_name}/entity_list` | GET | Returns a list of all entities in the graph. |
+| `/{graph_name}/relationship_list` | GET | Returns a list of all relationships in the graph. |
+| `/refresh` | POST | Refreshes and updates the list of available graphs. |
+
+---
+
+### Embeddings
+
+| Endpoint | Method | Parameters | Description |
+|----------|--------|------------|-------------|
+| `/` | GET | — | Lists all available embedding models. |
+| `/by-entity/{graph_name}/{embedding_model}/{entity}` | GET | `graph_name`, `embedding_model`, `entity` | Returns the embedding representation of the specified entity within a specific graph and embedding model. |
+| `/closest-entity/{graph_name}/{embedding_model}` | POST | `graph_name`, `embedding_model` <br> Body: `embedding: list[float]`, `k: int = 5` | Returns the top-k closest entities to a given embedding vector. |
+
+---
+
+
+### Predictions
+
+| Endpoint | Method | Parameters | Description |
+|----------|--------|------------|-------------|
+| `/link/{graph_name}/{embedding_model}/{head}/{tail}` | GET | `graph_name`, `embedding_model`, `head`, `tail`, `k: int = 5` | Predicts the k most likely relationships between two entities. |
+| `/entity/{graph_name}/{embedding_model}/{head}/{relationship}` | GET | `graph_name`, `embedding_model`, `head`, `relationship`, `k: int = 5` | Predicts the k most likely tail entities for a given head and relation. |
+| `/probability/{graph_name}/{embedding_model}/{head}/{relationship}/{tail}` | GET | `graph_name`, `embedding_model`, `head`, `relationship`, `tail` | Returns a score indicating the plausibility of a triplet. |
+
+---
+
+
+### Similaries
+
+| Endpoint | Method | Parameters | Description |
+|----------|--------|------------|-------------|
+| `/closest-entities/{graph_name}/{embedding_model}/{entity}` | GET | `graph_name`, `embedding_model`, `entity`, `k: int = 5` | Uses cosine similarity to return top-k closest/most similar entities to the specified entity. |
+| `/cosine-similarity/entities/{graph_name}/{embedding_model}/{entity1}/{entity2}` | GET | `graph_name`, `embedding_model`, `entity1`, `entity2` | Computes cosine similarity between two entities. |
+| `/cosine-similarity/embeddings` | POST | Body: `embedding_1: list[float]`, `embedding_2: list[float]` | Computes cosine similarity between two embedding vectors. |
+| `/cosine-similarity/entities/multiple/{graph_name}/{embedding_model}/{metric}` | POST | `graph_name`, `embedding_model`, `metric` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes and aggregates cosine similarities between two entity groups. |
+| `/cosine-similarity/embeddings/multiple/{metric}` | POST | `metric` <br> Body: `embedding_list1: list[float]`, `embedding_list2: list[float]` | Computes and aggregates cosine similarities between two groups of embeddings. |
+
+---
+
+### Centers
+
+| Endpoint | Method | Parameters | Description |
+|----------|--------|------------|-------------|
+| `/{graph_name}/{embedding_model}` | POST | `graph_name`, `embedding_model` <br> Body: `entity_list1: list[str]` | Computes both centroid and geometric median of the entities. Returns embeddings, radii, and closest entity to each center. |
+| `/overlap/{graph_name}/{embedding_model}/{center_type}/{radius_type}` | POST | `graph_name`, `embedding_model`, `center_type`, `radius_type` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the overlap ratio between two entity clusters. |
+| `/distance/{graph_name}/{embedding_model}/{center_type}` | POST | `graph_name`, `embedding_model`, `center_type` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the Euclidean distance between the centers of two clusters. |
+
+---
+
+## 📌 Notes
+
+- **Graph Names & Embedding Models**: Use values returned from `/graphs` and `/embedding_models`.
+- **Center Types**: `centroid`, `geometric_median`
+- **Similarity Agg. Metric Options**: `mean`, `median`, `max`, `min`, `sum`
+- **Radius Options**: `mean` (mean distance from the center to all entities), `median` (median distance from the center to all entities from the cluster), `max`(distance to the furthest entity form the center)
+
+---
 
 ## Training your Knowledge Graph Embedding Models
 To use the API, trained Knowledge Graph Embedding models must be available. These models are stored in the `models/` directory by default. If you encounter an error like `404: Model <model_name> not found.`, it indicates that the model is either missing from this directory or not yet trained. 

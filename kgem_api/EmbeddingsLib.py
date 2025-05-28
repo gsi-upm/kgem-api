@@ -130,7 +130,7 @@ def entity_cosine_similarity(model,entity1,entity2):
 
     return similarity.item()
 
-def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity_metric="average"):
+def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity_metric="mean"):
     
     similarity_matrix = np.zeros((len(entity_list1), len(entity_list2)))
 
@@ -139,7 +139,7 @@ def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity
             similarity_matrix[i, j] = entity_cosine_similarity(model,entity_list1[i],entity_list2[j])
     
     match similarity_metric:
-        case "average":
+        case "mean":
             similarity = np.mean(similarity_matrix)
         case "min":
             similarity = np.min(similarity_matrix)
@@ -150,7 +150,7 @@ def multiple_entity_cosine_similarity(model,entity_list1,entity_list2,similarity
         case "sum":
             similarity = np.sum(similarity_matrix)
         case _:
-            raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: average, min, max, median, sum.")        
+            raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: mean, min, max, median, sum.")        
 
     return similarity
 
@@ -166,7 +166,7 @@ def embeddings_cosine_similarity(embedding1,embedding2):
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
 
-def multiple_embedding_cosine_similarity(embeddings1,embeddings2,similarity_metric="average"):
+def multiple_embedding_cosine_similarity(embeddings1,embeddings2,similarity_metric="mean"):
     
     embeddings1=[torch.tensor(t) for t in embeddings1]
     embeddings2=[torch.tensor(t) for t in embeddings2]
@@ -178,7 +178,7 @@ def multiple_embedding_cosine_similarity(embeddings1,embeddings2,similarity_metr
             similarity_matrix[i, j] = embeddings_cosine_similarity(embeddings1[i],embeddings2[j])
     
     match similarity_metric:
-        case "average":
+        case "mean":
             similarity = np.mean(similarity_matrix)
         case "min":
             similarity = np.min(similarity_matrix)
@@ -189,7 +189,7 @@ def multiple_embedding_cosine_similarity(embeddings1,embeddings2,similarity_metr
         case "sum":
             similarity = np.sum(similarity_matrix)
         case _:
-            raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: average, min, max, median, sum.") 
+            raise HTTPException(status_code=400, detail=f"Invalid similarity metric '{similarity_metric}'. Allowed values are: mean, min, max, median, sum.") 
 
     return similarity
 
