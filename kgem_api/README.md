@@ -136,12 +136,13 @@ For this purpose, you can use the script `load_pretrained.py`, which takes a `.j
   "Q123": [0.4, 0.5, 0.6]
 }
 ```
+Here the keys refer to the entity ids in the graph and the values represent its embedding vector.
 
 Edit the script to set:
 
 ```python
 path_to_pretrained_embeddings = "pretrained_embeddings/your_embeddings.json"
-embedding_model = "transe"
+embedding_model = "transe" # this is just to save the model used for the pretrained embeddings
 output_dir = f"models/wikidataAMORset_{embedding_model}"
 ```
 
