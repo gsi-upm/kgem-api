@@ -53,9 +53,9 @@ An API for easy access to Knowledge Graphs and operations with Knowledge Graph E
 
 | Endpoint | Method | Parameters | Description |
 |----------|--------|------------|-------------|
-| `/{graph_name}/{embedding_model}` | POST | `graph_name`, `embedding_model` <br> Body: `entity_list1: list[str]` | Computes both centroid and geometric median of the entities. Returns embeddings, radii, and closest entity to each center. |
-| `/overlap/{graph_name}/{embedding_model}/{center_type}/{radius_type}` | POST | `graph_name`, `embedding_model`, `center_type`, `radius_type` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the overlap ratio between two entity clusters. |
-| `/distance/{graph_name}/{embedding_model}/{center_type}` | POST | `graph_name`, `embedding_model`, `center_type` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the Euclidean distance between the centers of two clusters. |
+| `/{graph_name}/{embedding_model}` | POST | `graph_name`, `embedding_model`, `raise_on_missing` <br> Body: `entity_list1: list[str]` | Computes both centroid and geometric median of the entities. Returns embeddings, radii, and closest entity to each center. |
+| `/overlap/{graph_name}/{embedding_model}/{center_type}/{radius_type}` | POST | `graph_name`, `embedding_model`, `center_type`, `radius_type`, `raise_on_missing` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the overlap ratio between two entity clusters. |
+| `/distance/{graph_name}/{embedding_model}/{center_type}` | POST | `graph_name`, `embedding_model`, `center_type`, `raise_on_missing` <br> Body: `entity_list1: list[str]`, `entity_list2: list[str]` | Computes the Euclidean distance between the centers of two clusters. |
 
 ---
 
@@ -65,6 +65,7 @@ An API for easy access to Knowledge Graphs and operations with Knowledge Graph E
 - **Center Types**: `centroid`, `geometric_median`
 - **Similarity Agg. Metric Options**: `mean`, `median`, `max`, `min`, `sum`
 - **Radius Options**: `mean` (mean distance from the center to all entities), `median` (median distance from the center to all entities from the cluster), `max`(distance to the furthest entity form the center)
+- **raise_on_missing**: If `True`, raises an error if there are any missing entities in the graph. If `False`, it computes the similarity aggregations, centers or overlapping ratios omitting the missing entities.
 
 ---
 
@@ -151,12 +152,6 @@ Then run:
 ```bash
 python scripts/load_pretrained.py
 ```
-
-The script will:
-- Initialize a PyKEEN model with the pretrained vectors
-- Save it to the specified `models/` folder (used later by the API)
-- Require no actual triples or training (epochs=0)
-
 
 ## Try it out!
 
