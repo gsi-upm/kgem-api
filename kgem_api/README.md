@@ -37,7 +37,7 @@ An API for easy access to Knowledge Graphs and operations with Knowledge Graph E
 ---
 
 
-### Similaries
+### Similarities
 
 | Endpoint | Method | Parameters | Description |
 |----------|--------|------------|-------------|
