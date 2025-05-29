@@ -70,7 +70,8 @@ def get_graph_metadata(graph_name: str):
         else:
             dataset = get_dataset(dataset=graph_name) # Assume most of the graphs will be available in pykeen
             metadata = {
-                "name": dataset.metadata["name"],
+                # "name": dataset.metadata["name"],
+                'name':graph_name,
                 "n_entities": dataset.num_entities,
                 "n_relations": dataset.num_relations,
                 "n_triples": sum(factory.num_triples for factory in [dataset.training, dataset.testing, dataset.validation] if factory),
@@ -97,7 +98,8 @@ def initialize_graph_list():
     """Initializes the global graph list by generating Pydantic Graph objects."""
     global graph_list
     graph_names = get_available_graphs_from_models_folder()
-    graph_list = [Graph(**get_graph_metadata(graph)) for graph in graph_names]
+    graph_metadata_list = [get_graph_metadata(graph) for graph in graph_names]
+    graph_list = [Graph(**graph_metadata) for graph_metadata in graph_metadata_list if graph_metadata is not None]
 
 def get_pydantic_graphs():
     """Retrieves the cached list of Pydantic Graph objects. Initializes it if not already done."""
