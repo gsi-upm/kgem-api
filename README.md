@@ -21,8 +21,6 @@ Explore the full API at [`kgem_api/`](./kgem_api/).
 A microservice that consumes the KGEM-API to power a straightforward news recommendation use case.  
 It takes two sets of **graph entity IDs** (one for each article) and performs:
 
-Falta diagrama
-
 - Feature extraction using `kgem_api`
 - ML-based **classification** (good/bad recommendation) or **regression** (relevance score)
 
