@@ -28,13 +28,12 @@ It takes two sets of **graph entity IDs** (one for each article) and performs:
 
 More details in [`recommendation_service/`](./recommendation_service/).
 
-## ⚙️ Getting started
 
-### Recommended: Docker Compose
+### How to Launch: Docker Compose
 
 ```bash
-git clone https://github.com/your-user/kgem-api-gsi.git
-cd kgem-api-gsi
+git clone https://github.com/your-user/kgem-api.git
+cd kgem-api
 docker-compose up --build
 ```
 
