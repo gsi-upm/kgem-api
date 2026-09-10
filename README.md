@@ -78,3 +78,29 @@ After clicking on the link you should see something like this:
 This interface allows you to explore all available endpoints, see what data each one accepts, and view the expected responses. You can even test the API directly from your browser by sending requests and seeing the results in real-time, in a user-friendly way :)
 
 Visit [fastAPI Interactive Docs Page](https://fastapi.tiangolo.com/#interactive-api-docs) for further details on this topic.
+
+
+### Demo del recomendador de noticias
+
+El recomendador compara las entidades que aparecen en dos noticias. No recibe el texto ni extrae las entidades: da por hecho que ese trabajo ya se ha hecho antes. Para cada grupo consulta KGEM-API, obtiene medidas como similitudes y distancias entre sus *embeddings* y utiliza esas características para decidir si recomendar la segunda noticia mediante clasificación binaria (`0` o `1`) o regresión (una puntuación continua de entre 0 y 1, por ejemplo "0.79").
+
+Esta demo simula una noticia A que menciona a Estados Unidos y Reino Unido, y una noticia B que menciona a Estados Unidos y Países Bajos. Para ver el resultado automático del sistema de recomendación, se debe ejecutar:
+
+```bash
+./demo.sh
+```
+
+Para repetirla manualmente, abre [http://localhost:8002/docs](http://localhost:8002/docs), despliega `POST /recommend/`, pulsa **Try it out** y copia este cuerpo:
+
+```json
+{
+  "news1_entities": ["usa", "uk"],
+  "news2_entities": ["usa", "netherlands"],
+  "mode": "regression",
+  "model_name": "random_forest",
+  "graph": "nations",
+  "embedding_model": "transe"
+}
+```
+
+La respuesta incluye la puntuación de recomendación y las características calculadas por KGEM-API. Los valores `nations` y `transe` identifican el modelo `nations_transe` creado por la demo.
