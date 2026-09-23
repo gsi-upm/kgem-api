@@ -10,7 +10,8 @@ RUN uv sync
 
 COPY api ./api
 COPY core ./core
-COPY model_loader.py main.py pydantic_models.py ./
+COPY .streamlit ./.streamlit
+COPY model_loader.py main.py pydantic_models.py streamlit_app.py ./
 
 EXPOSE 8002
 
