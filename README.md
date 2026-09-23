@@ -41,6 +41,7 @@ Once running:
 
 - **KGEM API**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **Recommendation Service**: [http://localhost:8002/docs](http://localhost:8002/docs)
+- **Visual recommender demo**: [http://localhost:8501](http://localhost:8501)
 
 ---
 
@@ -56,9 +57,13 @@ uv run python -m uvicorn main:app --reload --port 8000
 # Or for the recommender:
 cd recommendation_service
 uv run python -m uvicorn main:app --reload --port 8002
+
+# In another terminal, launch the visual demo:
+cd recommendation_service
+RECOMMENDATION_API_BASE=http://localhost:8002 uv run streamlit run streamlit_app.py --server.port 8501
 ```
 
-💡 Use different ports (default is `8000`).
+The visual demo will be available at [http://localhost:8501](http://localhost:8501). Keep both APIs running while using it.
 
 The command `uvicorn main:app --reload` starts a development server for the FastAPI application. It tells Uvicorn to look for the app instance in the `main.py` file and serves it on the default port (8000). The `--reload` flag enables auto-reloading, so the server restarts automatically whenever you make changes to the code. Check [FastAPI documentation](https://fastapi.tiangolo.com/) for further information.
 
@@ -84,13 +89,23 @@ Visit [fastAPI Interactive Docs Page](https://fastapi.tiangolo.com/#interactive-
 
 El recomendador compara las entidades que aparecen en dos noticias. No recibe el texto ni extrae las entidades: da por hecho que ese trabajo ya se ha hecho antes. Para cada grupo consulta KGEM-API, obtiene medidas como similitudes y distancias entre sus *embeddings* y utiliza esas características para decidir si recomendar la segunda noticia mediante clasificación binaria (`0` o `1`) o regresión (una puntuación continua de entre 0 y 1, por ejemplo "0.79").
 
-Esta demo simula una noticia A que menciona a Estados Unidos y Reino Unido, y una noticia B que menciona a Estados Unidos y Países Bajos. Para ver el resultado automático del sistema de recomendación, se debe ejecutar:
+La interfaz web de Streamlit permite elegir dos titulares ficticios y ver de forma visual la puntuación, la decisión y las señales calculadas por KGEM-API. Las entidades se asignan automáticamente a cada titular y se muestran como información de solo lectura. La demo no analiza texto ni entrena modelos: utiliza exclusivamente los artefactos ya disponibles.
+
+Para arrancar todos los servicios y preparar el pequeño modelo `nations_transe` solo si aún no existe, ejecuta:
 
 ```bash
 ./demo.sh
 ```
 
-Para repetirla manualmente, abre [http://localhost:8002/docs](http://localhost:8002/docs), despliega `POST /recommend/`, pulsa **Try it out** y copia este cuerpo:
+Después abre [http://localhost:8501](http://localhost:8501).
+
+Para detener todos los servicios:
+
+```bash
+docker compose down
+```
+
+La API también se puede probar manualmente en [http://localhost:8002/docs](http://localhost:8002/docs). Despliega `POST /recommend/`, pulsa **Try it out** y copia este cuerpo:
 
 ```json
 {
