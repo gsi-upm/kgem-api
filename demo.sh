@@ -3,6 +3,15 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
+wait_for() {
+  local service="$1"
+  local url="$2"
+  curl --retry 60 --retry-all-errors --retry-delay 1 --fail --silent "$url" >/dev/null || {
+    echo "No se pudo iniciar $service ($url)." >&2
+    return 1
+  }
+}
+
 docker compose build
 
 if [[ ! -f kgem_api/models/nations_transe/trained_model.pkl ]]; then
@@ -12,11 +21,8 @@ if [[ ! -f kgem_api/models/nations_transe/trained_model.pkl ]]; then
 fi
 
 docker compose up -d
-curl --retry 60 --retry-connrefused --retry-delay 1 --fail --silent --show-error \
-  http://localhost:8002/docs >/dev/null
+wait_for "KGEM-API" "http://localhost:8000/"
+wait_for "el recomendador" "http://localhost:8002/docs"
+wait_for "la interfaz" "http://localhost:8501/_stcore/health"
 
-curl --fail --silent --show-error \
-  -H 'Content-Type: application/json' \
-  -d '{"news1_entities":["usa","uk"],"news2_entities":["usa","netherlands"],"mode":"regression","model_name":"random_forest","graph":"nations","embedding_model":"transe"}' \
-  http://localhost:8002/recommend/
-echo
+echo "Demo lista en http://localhost:8501"

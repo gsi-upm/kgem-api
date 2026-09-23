@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   kgem-api:
     build:
@@ -23,4 +21,17 @@ services:
       - KGE_API_BASE=http://kgem-api:8000
     depends_on:
       - kgem-api
+    restart: always
+
+  demo:
+    build:
+      context: ./recommendation_service
+    container_name: kgem-recommender-demo
+    command: ["uv", "run", "streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    ports:
+      - "8501:8501"
+    environment:
+      - RECOMMENDATION_API_BASE=http://recommendation_service:8002
+    depends_on:
+      - recommendation_service
     restart: always
